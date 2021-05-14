@@ -12,7 +12,7 @@ namespace JonFabeckOsoAPITests
         {
         }
 
-        //In this section we are testing the Post
+        //This test checks the happy path for the GET
         [Test]
         public void CheckIfOk()
         {
@@ -46,7 +46,7 @@ namespace JonFabeckOsoAPITests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "We expected a 404 not found after using the wrong rquest type");
         }
 
-        //In this section we are testing the post api
+        //In this section we are testing POST
         [Test]
         public void CheckIfPOstOk()
         {
@@ -74,7 +74,7 @@ namespace JonFabeckOsoAPITests
         }
 
         [Test]
-        public void CheckPutInvalidID()
+        public void CheckPutInvalidId()
         {
             RestClient client = new RestClient("https://jsonplaceholder.typicode.com/posts/agh");
             RestRequest request = new RestRequest(Method.PUT);
@@ -85,7 +85,7 @@ namespace JonFabeckOsoAPITests
         }
 
         //This we are going to test the delete api, important note, I will be running this call like it's a real api, however since the backend is fake
-        //Noting ever gets created or deleted, I will instead like I'm creating then deleting afterwards.
+        //Nothing ever gets created or deleted, this will act like I'm creating and then deleting afterwards.
         [Test]
         public void CheckDelete()
         {
@@ -97,7 +97,7 @@ namespace JonFabeckOsoAPITests
             //Check if the first call worked
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "We expected the api to return 200 OK");
 
-            //Now make the call to delte
+            //Now make the call to delete
             RestClient client2 = new RestClient("https://jsonplaceholder.typicode.com/posts/9");
             RestRequest request2 = new RestRequest(Method.DELETE);
 
@@ -106,20 +106,20 @@ namespace JonFabeckOsoAPITests
             Assert.That(response2.StatusCode, Is.EqualTo(HttpStatusCode.OK), "We expected the api to return 200 OK");
         }
 
-        /*/[Test]
-        public void CheckPostWithComments()
-        {
-            string apiBody = "[ { \"postId\": 9, \"id\": 41, \"name\": \"voluptas deleniti ut\", \"email\": \"Lucio @gladys.tv\", \"body\": \"facere repudiandae vitae ea aut sed quo ut et\nfacere nihil ut voluptates in\nsaepe cupiditate accusantium numquam dolores\ninventore sint mollitia provident\" }, { \"postId\": 9, \"id\": 42, \"name\": \"nam qui et\", \"email\": \"Shemar @ewell.name\", \"body\": \"aut culpa quaerat veritatis eos debitis\naut repellat eius explicabo et\nofficiis quo sint at magni ratione et iure\nincidunt quo sequi quia dolorum beatae qui\" }, { \"postId\": 9, \"id\": 43, \"name\": \"molestias sint est voluptatem modi\", \"email\": \"Jackeline @eva.tv\", \"body\": \"voluptatem ut possimus laborum quae ut commodi delectus\nin et consequatur\nin voluptas beatae molestiae\nest rerum laborum et et velit sint ipsum dolorem\" }, { \"postId\": 9, \"id\": 44, \"name\": \"hic molestiae et fuga ea maxime quod\", \"email\": \"Marianna_Wilkinson @rupert.io\", \"body\": \"qui sunt commodi\nsint vel optio vitae quis qui non distinctio\nid quasi modi dicta\neos nihil sit inventore est numquam officiis\" }, { \"postId\": 9, \"id\": 45, \"name\": \"autem illo facilis\", \"email\": \"Marcia @name.biz\", \"body\": \"ipsum odio harum voluptatem sunt cumque et dolores\nnihil laboriosam neque commodi qui est\nquos numquam voluptatum\ncorporis quo in vitae similique cumque tempore\" } ]";
-            var jsonBoby = request.JsonSerializer.Serialize(apiBody);
-
-            RestClient client = new RestClient("https://jsonplaceholder.typicode.com/posts/9/comments");
-            RestRequest request = new RestRequest(Method.POST);
-            request.AddHeader("Content-type", "application/json");
-            request.AddJsonBody(apiBody);
-
-            IRestResponse response = client.Execute(request);
-
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created), "We expected the api to return 201 Created");
-        }/*/
+         // [Test]
+         // public void CheckPostWithComments()
+         // {
+         //     string apiBody = "[ { \"postId\": 9, \"id\": 41, \"name\": \"voluptas deleniti ut\", \"email\": \"Lucio @gladys.tv\", \"body\": \"facere repudiandae vitae ea aut sed quo ut et\nfacere nihil ut voluptates in\nsaepe cupiditate accusantium numquam dolores\ninventore sint mollitia provident\" }, { \"postId\": 9, \"id\": 42, \"name\": \"nam qui et\", \"email\": \"Shemar @ewell.name\", \"body\": \"aut culpa quaerat veritatis eos debitis\naut repellat eius explicabo et\nofficiis quo sint at magni ratione et iure\nincidunt quo sequi quia dolorum beatae qui\" }, { \"postId\": 9, \"id\": 43, \"name\": \"molestias sint est voluptatem modi\", \"email\": \"Jackeline @eva.tv\", \"body\": \"voluptatem ut possimus laborum quae ut commodi delectus\nin et consequatur\nin voluptas beatae molestiae\nest rerum laborum et et velit sint ipsum dolorem\" }, { \"postId\": 9, \"id\": 44, \"name\": \"hic molestiae et fuga ea maxime quod\", \"email\": \"Marianna_Wilkinson @rupert.io\", \"body\": \"qui sunt commodi\nsint vel optio vitae quis qui non distinctio\nid quasi modi dicta\neos nihil sit inventore est numquam officiis\" }, { \"postId\": 9, \"id\": 45, \"name\": \"autem illo facilis\", \"email\": \"Marcia @name.biz\", \"body\": \"ipsum odio harum voluptatem sunt cumque et dolores\nnihil laboriosam neque commodi qui est\nquos numquam voluptatum\ncorporis quo in vitae similique cumque tempore\" } ]";
+         //     var jsonBoby = request.JsonSerializer.Serialize(apiBody);
+         //
+         //     RestClient client = new RestClient("https://jsonplaceholder.typicode.com/posts/9/comments");
+         //     RestRequest request = new RestRequest(Method.POST);
+         //     request.AddHeader("Content-type", "application/json");
+         //     request.AddJsonBody(apiBody);
+         //
+         //     IRestResponse response = client.Execute(request);
+         //
+         //     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created), "We expected the api to return 201 Created");
+         // }
     }
 }
