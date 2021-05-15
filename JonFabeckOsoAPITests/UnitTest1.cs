@@ -1,7 +1,8 @@
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using RestSharp;
+using System;
 using System.Net;
-using Ubiety.Dns.Core;
 
 namespace JonFabeckOsoAPITests
 {
@@ -106,20 +107,63 @@ namespace JonFabeckOsoAPITests
             Assert.That(response2.StatusCode, Is.EqualTo(HttpStatusCode.OK), "We expected the api to return 200 OK");
         }
 
-         // [Test]
-         // public void CheckPostWithComments()
-         // {
-         //     string apiBody = "[ { \"postId\": 9, \"id\": 41, \"name\": \"voluptas deleniti ut\", \"email\": \"Lucio @gladys.tv\", \"body\": \"facere repudiandae vitae ea aut sed quo ut et\nfacere nihil ut voluptates in\nsaepe cupiditate accusantium numquam dolores\ninventore sint mollitia provident\" }, { \"postId\": 9, \"id\": 42, \"name\": \"nam qui et\", \"email\": \"Shemar @ewell.name\", \"body\": \"aut culpa quaerat veritatis eos debitis\naut repellat eius explicabo et\nofficiis quo sint at magni ratione et iure\nincidunt quo sequi quia dolorum beatae qui\" }, { \"postId\": 9, \"id\": 43, \"name\": \"molestias sint est voluptatem modi\", \"email\": \"Jackeline @eva.tv\", \"body\": \"voluptatem ut possimus laborum quae ut commodi delectus\nin et consequatur\nin voluptas beatae molestiae\nest rerum laborum et et velit sint ipsum dolorem\" }, { \"postId\": 9, \"id\": 44, \"name\": \"hic molestiae et fuga ea maxime quod\", \"email\": \"Marianna_Wilkinson @rupert.io\", \"body\": \"qui sunt commodi\nsint vel optio vitae quis qui non distinctio\nid quasi modi dicta\neos nihil sit inventore est numquam officiis\" }, { \"postId\": 9, \"id\": 45, \"name\": \"autem illo facilis\", \"email\": \"Marcia @name.biz\", \"body\": \"ipsum odio harum voluptatem sunt cumque et dolores\nnihil laboriosam neque commodi qui est\nquos numquam voluptatum\ncorporis quo in vitae similique cumque tempore\" } ]";
-         //     var jsonBoby = request.JsonSerializer.Serialize(apiBody);
-         //
-         //     RestClient client = new RestClient("https://jsonplaceholder.typicode.com/posts/9/comments");
-         //     RestRequest request = new RestRequest(Method.POST);
-         //     request.AddHeader("Content-type", "application/json");
-         //     request.AddJsonBody(apiBody);
-         //
-         //     IRestResponse response = client.Execute(request);
-         //
-         //     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created), "We expected the api to return 201 Created");
-         // }
+        //Check the post with comments and make sure the json body works
+        [Test]
+        public void CheckPostWithComments()
+        {
+            RestClient client = new RestClient("https://jsonplaceholder.typicode.com/posts/9/comments");
+            RestRequest request = new RestRequest(Method.POST);
+            request.AddHeader("Content-type", "application/json");
+            request.AddJsonBody(new
+            {
+                id = 1,
+                title = "foo",
+                body = "bar",
+                userId = 1
+            });
+
+            IRestResponse response = client.Execute(request);
+
+            //parse the response to test it is correct
+            string jsonResponse = response.Content;
+            JObject jObject = JObject.Parse(jsonResponse);
+            JToken jId = jObject["id"];
+            JToken jTitle = jObject["title"];
+            JToken jBody = jObject["body"];
+            JToken jUserId = jObject["userId"];
+            JToken jPostId = jObject["postId"];
+
+            //Check the Status code
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created), "We expected the api to return 201 Created");
+            //Check the return code
+            Assert.That(jId.ToString(), Is.EqualTo("501"), "We expected the ID to be 501");
+            Assert.That(jTitle.ToString(), Is.EqualTo("foo"), "We expected the Title to be foo");
+            Assert.That(jBody.ToString(), Is.EqualTo("bar"), "We expected the Body to be bar");
+            Assert.That(jUserId.ToString(), Is.EqualTo("1"), "We expected the UserId to be 1");
+            Assert.That(jPostId.ToString(), Is.EqualTo("9"), "We expected the PostId to be 9");
+        }
+
+        //Test the get call with comments
+        [Test]
+        public void CheckGetPostComment()
+        {
+            RestClient client = new RestClient("https://jsonplaceholder.typicode.com/comments?postId=12");
+            RestRequest request = new RestRequest(Method.GET);
+
+            IRestResponse response = client.Execute(request);
+
+            //parse the response to test it is correct
+            string jsonResponse = response.Content;
+            //I just want to check one response, so I'm trimming off the rest 
+            jsonResponse = jsonResponse.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
+            jsonResponse = jsonResponse.Substring(0, jsonResponse.IndexOf("}") + 1);
+            Console.WriteLine(jsonResponse);
+            JObject jObject = JObject.Parse(jsonResponse);
+            JToken jPostId = jObject["postId"];
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "We expected a 200 ok");
+            //We just want to make sure one of the post ID is equal to 12, the one we called
+            Assert.That(jPostId.ToString(), Is.EqualTo("12"), "We expected the PostId to be 12");
+        }
     }
 }
